@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>IPL Live Score</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- PWA Settings -->
+  <meta name="theme-color" content="#0b0f1a">
+
+  <style>
+    body {
+      font-family: Arial;
+      background: #0b0f1a;
+      color: white;
+      text-align: center;
+      margin: 0;
+    }
+
+    header {
+      padding: 15px;
+      background: #111827;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .card {
+      background: #1c2233;
+      margin: 15px;
+      padding: 15px;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>🏏 IPL Live Score</header>
+
+<div id="matches">Loading...</div>
+
+<script>
+const options = {
+  method: 'GET',
+  headers: {
+    'X-RapidAPI-Key': '2922b8fd45msheb96e3fe0e64bffp119195jsnb8e2d8d596b6',
+    'X-RapidAPI-Host': 'cricbuzz-cricket.p.rapidapi.com'
+  }
+};
+
+function getMatches() {
+  fetch('https://cricbuzz-cricket.p.rapidapi.com/matches/v1/live', options)
+    .then(res => res.json())
+    .then(data => {
+
+      let output = "";
+
+      data.typeMatches.forEach(type => {
+        type.seriesMatches.forEach(series => {
+          series.seriesAdWrapper.matches.forEach(match => {
+
+            let team1 = match.matchInfo.team1.teamName;
+            let team2 = match.matchInfo.team2.teamName;
+            let status = match.matchInfo.status;
+
+            output += `
+              <div class="card">
+                <h3>${team1} vs ${team2}</h3>
+                <p>${status}</p>
+              </div>
+            `;
+          });
+        });
+      });
+
+      document.getElementById("matches").innerHTML = output || "No matches";
+    });
+}
+
+getMatches();
+setInterval(getMatches, 30000);
+</script>
+
+</body>
+</html>
